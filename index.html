@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyGram Pro - Ultra Secure Private Encrypted</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #ec4899;
+            --accent-cyan: #00f2fe;
+            --accent-blue: #4facfe;
+            --bg-dark: #030712;
+            --glass-bg: rgba(17, 24, 39, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --danger: #ef4444;
+            --success: #10b981;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            /* --- YAHAN AESTHETIC WALLPAPER AUR DARK GRADIENT JODA GAYA HAI --- */
+            background: linear-gradient(135deg, rgba(3, 7, 18, 0.92) 0%, rgba(15, 23, 42, 0.88) 50%, rgba(30, 27, 75, 0.85) 100%), 
+                        url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1920&auto=format&fit=crop') no-repeat center center fixed;
+            background-blend-mode: overlay;
+            background-size: cover;
+            color: #f3f4f6; 
+            padding-bottom: 90px;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* --- 8D HYPER-REALISTIC SPLASH SCREEN (M LOGO ANIMATION) --- */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #030712;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            overflow: hidden;
+            transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), visibility 1s;
+        }
+
+        #splash-screen::before {
+            content: ''; position: absolute;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(0,242,254,0.15) 0%, rgba(99,102,241,0.1) 50%, transparent 70%);
+            border-radius: 50%; filter: blur(60px);
+            animation: pulseGlow 4s infinite alternate ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(1.2); opacity: 0.9; }
+        }
+
+        .splash-stage {
+            position: relative;
+            width: 200px; height: 200px;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .ring-outer {
+            position: absolute; width: 180px; height: 180px; border-radius: 50%;
+            border: 2px solid transparent; border-top: 2px solid var(--accent-cyan); border-right: 2px solid var(--primary);
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.4);
+            animation: spinClockwise 3.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+        }
+
+        .ring-inner {
+            position: absolute; width: 145px; height: 145px; border-radius: 50%;
+            border: 1px dashed rgba(255, 255, 255, 0.25); border-bottom: 2px solid var(--secondary);
+            animation: spinCounter 5s linear infinite;
+        }
+
+        @keyframes spinClockwise { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes spinCounter { 0% { transform: rotate(360deg); } 100% { transform: rotate(0deg); } }
+
+        .glass-core {
+            position: relative; width: 105px; height: 105px; border-radius: 28px;
+            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.4);
+            display: flex; justify-content: center; align-items: center; overflow: hidden; z-index: 2;
+        }
+
+        .laser-sweep {
+            position: absolute; top: -100%; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(0, 242, 254, 0.35), transparent);
+            animation: laserScan 2.5s ease-in-out infinite;
+        }
+
+        @keyframes laserScan { 0% { top: -100%; } 50% { top: 100%; } 100% { top: 100%; } }
+
+        .brand-emblem {
+            font-size: 52px; font-weight: 900;
+            background: linear-gradient(135deg, #ffffff 0%, var(--accent-cyan) 50%, var(--primary) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; z-index: 3;
+        }
+
+        .brand-text-container { margin-top: 24px; text-align: center; z-index: 2; }
+        .brand-title { font-size: 22px; font-weight: 800; letter-spacing: 2.5px; color: #ffffff; text-transform: uppercase; }
+        .brand-subtitle { font-size: 10px; font-weight: 600; color: #64748b; letter-spacing: 4px; text-transform: uppercase; margin-top: 8px; }
+
+        .fade-out { opacity: 0; visibility: hidden; }
+        /* ------------------------------------------------------------- */
+
+        .marquee-container { 
+            background: rgba(15, 17, 26, 0.85); backdrop-filter: blur(10px); padding: 12px; 
+            border-bottom: 1px solid var(--glass-border); overflow: hidden; 
+        }
+        .marquee-text { color: #a5b4fc; font-size: 14px; white-space: nowrap; animation: moveMarquee 12s linear infinite; }
+        @keyframes moveMarquee { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+
+        .page { display: none; padding: 20px 16px; }
+        .active { display: block; }
+
+        .card-3d { 
+            background: var(--glass-bg); backdrop-filter: blur(20px);
+            padding: 20px; border-radius: 18px; border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6); margin-bottom: 16px;
+        }
+
+        .input-group { margin-bottom: 14px; position: relative; }
+        input { 
+            width: 100%; padding: 14px; border-radius: 10px; border: 2px solid rgba(255, 255, 255, 0.15); 
+            background: rgba(10, 14, 23, 0.85); color: #fff; outline: none; transition: all 0.3s;
+        }
+        input.invalid { border-color: var(--danger) !important; color: var(--danger); }
+        input.valid { border-color: var(--success) !important; color: #fff; }
+
+        .validation-msg { font-size: 11px; margin-top: 4px; display: block; font-weight: 600; }
+        .validation-msg.invalid { color: var(--danger); }
+        .validation-msg.valid { color: var(--success); }
+
+        button.action-btn { 
+            width: 100%; padding: 12px; 
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); 
+            border: none; color: white; border-radius: 10px; font-weight: bold; cursor: pointer; transition: transform 0.2s;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+        button.action-btn:active { transform: scale(0.98); }
+
+        .nav-bar { 
+            position: fixed; bottom: 12px; left: 5%; width: 90%; 
+            background: rgba(15, 20, 32, 0.9); backdrop-filter: blur(20px); 
+            display: flex; justify-content: space-around; 
+            padding: 12px 0; border-radius: 20px; border: 1px solid var(--glass-border); z-index: 100;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .nav-btn { background: none; border: none; color: #64748b; font-size: 22px; cursor: pointer; }
+        .nav-btn.active-tab { color: #fff; text-shadow: 0 0 10px var(--accent-cyan); }
+
+        /* Saved Profile Preview Card */
+        .my-profile-card {
+            text-align: center; padding: 22px; border-radius: 18px;
+            margin-bottom: 20px; position: relative;
+            background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(16px);
+            border: 2px solid rgba(255, 255, 255, 0.12);
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+        .my-profile-card::after {
+            content:''; position: absolute; top:0; left:0; width:100%; height:100%;
+            border-radius: 18px; border: 2px solid var(--accent-cyan);
+            opacity: 0.4; filter: blur(10px); z-index: -1;
+        }
+
+        .view-avatar-wrapper { position: relative; width: 100px; height: 100px; margin: 0 auto 12px; z-index: 2; }
+        .view-avatar-circle {
+            width: 100%; height: 100%; border-radius: 50%; border: 3px solid var(--accent-cyan);
+            overflow: hidden; background: #1e293b; display: flex; align-items: center; justify-content: center;
+        }
+        .view-avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* Setup / Edit Profile Photo UI */
+        .edit-avatar-wrapper { position: relative; width: 110px; height: 110px; margin: 0 auto 20px; }
+        .edit-avatar-circle {
+            width: 100%; height: 100%; border-radius: 50%; border: 3px solid #334155;
+            overflow: hidden; background: #334155; display: flex; align-items: center; justify-content: center; cursor: pointer;
+        }
+        
+        /* Tikona Action Badge */
+        .badge-btn {
+            position: absolute; bottom: 2px; right: 2px; background: var(--accent-blue);
+            border: 2px solid #1e293b; color: white; width: 34px; height: 34px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            font-size: 14px; clip-path: polygon(100% 0, 0 100%, 100% 100%);
+            padding-top: 6px; padding-left: 6px;
+        }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(8px); }
+        .modal-content { background: #1e293b; padding: 20px; border-radius: 12px; width: 85%; max-width: 300px; text-align: center; border: 1px solid var(--glass-border); }
+        .menu-btn { width: 100%; padding: 12px; margin: 6px 0; background: #334155; border: none; color: white; border-radius: 8px; cursor: pointer; text-align: left; font-size: 14px; display: flex; align-items: center; gap: 10px; }
+        .menu-btn.delete { color: var(--danger); }
+        #lightbox-img { max-width: 90%; max-height: 80vh; border-radius: 10px; box-shadow: 0 0 50px rgba(0,242,254,0.3); }
+
+        .user-card { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 12px; margin-top: 10px; border: 1px solid rgba(255,255,255,0.08); }
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .user-avatar { width: 45px; height: 45px; border-radius: 50%; background: #334155; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .add-btn { background: var(--primary); border: none; color: white; width: 38px; height: 38px; border-radius: 50%; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+        .msg { padding: 10px 14px; border-radius: 12px; margin-bottom: 8px; max-width: 75%; font-size: 14px; }
+        .msg.me { background: var(--primary); color: white; margin-left: auto; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3); }
+        .msg.other { background: #334155; color: white; margin-right: auto; }
+        .chat-box { height: 280px; overflow-y: auto; background: rgba(0,0,0,0.4); border-radius: 10px; padding: 12px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
+    </style>
+</head>
+<body>
+
+    <div id="splash-screen">
+        <div class="splash-stage">
+            <div class="ring-outer"></div>
+            <div class="ring-inner"></div>
+            <div class="glass-core">
+                <div class="laser-sweep"></div>
+                <div class="brand-emblem">M</div>
+            </div>
+        </div>
+        <div class="brand-text-container">
+            <div class="brand-title">MYGRAM <span>PRO</span></div>
+            <div class="brand-subtitle">Private Secure Encrypted</div>
+        </div>
+    </div>
+
+    <div class="marquee-container">
+        <div class="marquee-text">🔒 MyGram Pro — Private & Encrypted Social App🔒</div>
+    </div>
+
+    <div id="home" class="page active">
+        
+        <div id="my-profile-view" class="my-profile-card" style="display:none;">
+            <div class="view-avatar-wrapper">
+                <div class="view-avatar-circle">
+                    <img id="my-view-pic" src="" alt="Photo">
+                </div>
+            </div>
+            <h2 id="my-view-name" style="font-size:22px; color:#fff; font-weight:900;">-</h2>
+            <p id="my-view-id" style="color:var(--accent-cyan); font-weight:bold; margin-top:4px; font-size:14px; letter-spacing:1px;">-</p>
+            <small style="color:var(--success); display:block; margin-top:10px; font-weight:700;">✓ Secure Active Account</small>
+        </div>
+
+        <b style="font-size:18px;">Setup or Edit Profile 🛠️</b>
+        <div class="card-3d" style="margin-top:10px;">
+            
+            <div class="edit-avatar-wrapper">
+                <div class="edit-avatar-circle" onclick="openLightbox()">
+                    <span id="placeholder" class="avatar-placeholder">👤</span>
+                    <img id="edit-profile-img" src="" alt="Preview">
+                </div>
+                <div class="badge-btn" onclick="openPhotoOptions(event)">▲</div>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="in-name" placeholder="Display Name (e.g., Harshit 😎)" oninput="validateName(this)">
+                <span id="name-msg" class="validation-msg invalid">Name must be 2 to 15 characters</span>
+            </div>
+            <div class="input-group">
+                <input type="text" id="in-id" placeholder="Strict Unique ID (e.g., harsh.12)" oninput="validateID(this)">
+                <span id="id-msg" class="validation-msg invalid">Strict format: harsh.12 (5-10 chars)</span>
+            </div>
+            
+            <button class="action-btn" style="margin-top:10px;" onclick="saveProfile()">Save Profile</button>
+        </div>
+    </div>
+
+    <div id="search" class="page">
+        <b style="font-size:18px;">Search User 🔍</b>
+        <div class="card-3d" style="margin-top:10px;">
+            <input type="text" id="search-id" placeholder="Enter Exact ID (e.g., harsh.12)">
+            <button class="action-btn" style="margin-top:10px;" onclick="searchUser()">Search</button>
+            <div id="search-result"></div>
+        </div>
+    </div>
+
+    <div id="requests" class="page">
+        <b style="font-size:18px;">Connections & Friends 👥</b>
+        <div class="card-3d" style="margin-top:10px;">
+            <b style="color:#a5b4fc;">Pending Requests (`+` Received)</b>
+            <div id="pending-list" style="margin-top:8px; color:#64748b;">No pending requests.</div>
+        </div>
+        <div class="card-3d">
+            <b style="color:var(--success);">Connected Friends</b>
+            <div id="friends-list" style="margin-top:8px; color:#64748b;">No connected friends yet.</div>
+        </div>
+    </div>
+
+    <div id="chat" class="page">
+        <b id="chat-header" style="font-size:18px;">Chat Room 💬</b>
+        <div class="card-3d" style="margin-top:10px;">
+            <div id="chat-lock-msg" style="color:var(--danger); text-align:center; padding:20px; font-weight:600;">
+                🔒 You can only chat after Friend Request (+) is Accepted!
+            </div>
+            <div id="chat-active-zone" style="display:none;">
+                <div class="chat-box" id="chat-box"></div>
+                <div style="display:flex; gap:8px;">
+                    <input type="text" id="chat-input" placeholder="Type a message...">
+                    <button class="action-btn" style="width:auto; padding:0 20px;" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-bar">
+        <button class="nav-btn active-tab" onclick="showPage('home', this)">🏠</button>
+        <button class="nav-btn" onclick="showPage('search', this)">🔍</button>
+        <button class="nav-btn" onclick="showPage('requests', this)">👥</button>
+        <button class="nav-btn" onclick="showPage('chat', this)">💬</button>
+    </div>
+
+    <div id="options-modal" class="modal" onclick="closeModal('options-modal')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h4 style="margin-top:0; color:#fff;">Profile Photo</h4>
+            <button class="menu-btn" onclick="triggerCamera()">📸 Take Photo (Camera)</button>
+            <button class="menu-btn" onclick="triggerGallery()">📁 Choose from Gallery</button>
+            <button id="delete-btn" class="menu-btn delete" onclick="deletePhoto()" style="display:none">🗑️ Delete Photo</button>
+        </div>
+    </div>
+
+    <div id="lightbox-modal" class="modal" onclick="closeModal('lightbox-modal')">
+        <img id="lightbox-img" src="" alt="Full Preview">
+    </div>
+
+    <input type="file" id="file-input-gallery" accept="image/*" style="display:none" onchange="processImage(event)">
+    <input type="file" id="file-input-camera" accept="image/*" capture="user" style="display:none" onchange="processImage(event)">
+
+    <script>
+        let compressedPhotoData = null;
+        let activeChatFriend = null;
+
+        window.onload = function() {
+            loadSavedProfile();
+
+            setTimeout(function() {
+                let splash = document.getElementById('splash-screen');
+                if(splash) splash.classList.add('fade-out');
+            }, 3800);
+        };
+
+        function validateName(el) {
+            let val = el.value.trim();
+            let msgEl = document.getElementById('name-msg');
+            if(val.length >= 2 && val.length <= 15) {
+                el.classList.remove('invalid'); el.classList.add('valid');
+                msgEl.classList.remove('invalid'); msgEl.classList.add('valid');
+                msgEl.innerText = "✓ Valid Name"; return true;
+            } else {
+                el.classList.remove('valid'); el.classList.add('invalid');
+                msgEl.classList.remove('valid'); msgEl.classList.add('invalid');
+                msgEl.innerText = "Name must be 2 to 15 characters"; return false;
+            }
+        }
+
+        function validateID(el) {
+            let val = el.value.trim();
+            let msgEl = document.getElementById('id-msg');
+            let regex = /^(?=.*[0-9.]).{5,10}$/;
+            if(regex.test(val) && !val.includes(" ")) {
+                el.classList.remove('invalid'); el.classList.add('valid');
+                msgEl.classList.remove('invalid'); msgEl.classList.add('valid');
+                msgEl.innerText = "✓ Valid ID Format"; return true;
+            } else {
+                el.classList.remove('valid'); el.classList.add('invalid');
+                msgEl.classList.remove('valid'); msgEl.classList.add('invalid');
+                msgEl.innerText = "Strict format: 5-10 chars & dot/number (e.g. harsh.12)"; return false;
+            }
+        }
+
+        function openPhotoOptions(e) {
+            e.stopPropagation();
+            document.getElementById('delete-btn').style.display = compressedPhotoData ? 'flex' : 'none';
+            document.getElementById('options-modal').style.display = 'flex';
+        }
+
+        function triggerCamera() { closeModal('options-modal'); document.getElementById('file-input-camera').click(); }
+        function triggerGallery() { closeModal('options-modal'); document.getElementById('file-input-gallery').click(); }
+
+        function processImage(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    c
