@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyGram - Pro 3D</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --secondary: #ec4899;
+            --bg-dark: #090a0f;
+            --glass-bg: rgba(22, 27, 38, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            background: var(--bg-dark); 
+            color: #f3f4f6; 
+            min-height: 100vh;
+            padding-bottom: 90px;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.15) 0%, transparent 40%);
+        }
+
+        .marquee-container { 
+            background: rgba(15, 17, 26, 0.8); 
+            backdrop-filter: blur(12px);
+            padding: 14px; 
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden; 
+        }
+        .marquee-text { 
+            color: #a5b4fc; 
+            font-size: 15px; 
+            font-weight: 600; 
+            letter-spacing: 0.5px;
+            white-space: nowrap; 
+            animation: move 14s linear infinite; 
+        }
+        @keyframes move { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+
+        .page { 
+            display: none; 
+            padding: 24px 16px; 
+            opacity: 0; 
+            transition: opacity 0.3s ease; 
+        }
+        .active { display: block; opacity: 1; }
+
+        h3 { 
+            font-size: 22px; 
+            margin-bottom: 16px; 
+            font-weight: 700; 
+            background: linear-gradient(135deg, #fff, #94a3b8); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        }
+
+        .card-3d { 
+            background: var(--glass-bg); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 24px; 
+            border-radius: 20px; 
+            border: 1px solid var(--glass-border);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.6),
+                inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+
+        input { 
+            width: 100%; 
+            padding: 14px 16px; 
+            margin: 10px 0; 
+            border-radius: 12px; 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            background: rgba(10, 14, 23, 0.7); 
+            color: #fff; 
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+        }
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), 0 0 12px var(--primary-glow);
+        }
+
+        button.action-btn { 
+            width: 100%;
+            padding: 14px 24px; 
+            margin-top: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); 
+            border: none; 
+            color: white; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            font-size: 15px;
+            box-shadow: 0 8px 20px -4px var(--primary-glow);
+            transition: all 0.2s ease;
+        }
+        button.action-btn:active {
+            transform: translateY(2px) scale(0.98);
+        }
+
+        .nav-bar { 
+            position: fixed; 
+            bottom: 16px; 
+            left: 5%;
+            width: 90%; 
+            background: rgba(15, 20, 32, 0.85); 
+            backdrop-filter: blur(20px);
+            display: flex; 
+            justify-content: space-around; 
+            padding: 12px 0; 
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.12); 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            z-index: 1000;
+        }
+        .nav-btn { 
+            background: none; 
+            border: none; 
+            color: #64748b; 
+            font-size: 22px; 
+            cursor: pointer; 
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 12px;
+        }
+        .nav-btn.active-tab { 
+            color: #fff; 
+            background: rgba(255, 255, 255, 0.08);
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        .avatar-frame {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 3px;
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+        }
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="marquee-container">
+        <div class="marquee-text">✨ Welcome to MyGram Pro — Next Generation UI ✨</div>
+    </div>
+
+    <!-- 1. होम पेज -->
+    <div id="home" class="page active">
+        <h3>प्रोफाइल सेटअप 🛠️</h3>
+        <div class="card-3d">
+            <input type="text" id="in-name" placeholder="अपना नाम लिखें">
+            <input type="text" id="in-id" placeholder="यूनिक यूजरनेम (e.g. @Harshit)">
+            <input type="file" id="in-pic" accept="image/*" onchange="previewImage(event)">
+            <button class="action-btn" onclick="saveProfile()">प्रोफाइल सेव करें</button>
+        </div>
+    </div>
+
+    <!-- 2. सर्च पेज -->
+    <div id="search" class="page">
+        <h3>एक्सप्लोर 🔍</h3>
+        <div class="card-3d">
+            <input type="text" id="search-id" placeholder="यूजर ID दर्ज करें...">
+            <button class="action-btn" onclick="searchUser()">खोजें</button>
+            <div id="result" style="display:none; margin-top:20px; padding-top:15px; border-top:1px solid rgba(255,255,255,0.1);">
+                <p id="found-name" style="margin-bottom:12px; font-weight:600;"></p>
+                <button class="action-btn" style="background:#10b981;" onclick="alert('रिक्वेस्ट भेज दी गई!')">कनेक्ट करें</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. चैट रूम -->
+    <div id="chat" class="page">
+        <h3>चैट रूम 💬</h3>
+        <div class="card-3d" style="text-align: center; color: #94a3b8; padding: 40px 20px;">
+            कोई नया मैसेज नहीं है।
+        </div>
+    </div>
+
+    <!-- 4. प्रोफाइल पेज -->
+    <div id="profile" class="page">
+        <h3>आपकी प्रोफाइल 👤</h3>
+        <div class="card-3d" style="text-align: center;">
+            <div class="avatar-frame">
+                <div class="avatar-img">
+                    <span id="out-pic-default">👤</span>
+                    <img id="out-pic-img" alt="Profile Picture" style="display:none; width:100%; height:100%; object-fit:cover;">
+                </div>
+            </div>
+            <h2 id="out-name" style="font-size: 22px;">Guest User</h2>
+            <p id="out-id" style="color: #818cf8; font-weight: 600; margin-top:4px;">@username</p>
+        </div>
+    </div>
+
+    <!-- 3D Floating Bottom Nav -->
+    <div class="nav-bar">
+        <button class="nav-btn active-tab" onclick="showPage('home', this)">🏠</button>
+        <button class="nav-btn" onclick="showPage('search', this)">🔍</button>
+        <button class="nav-btn" onclick="showPage('chat', this)">💬</button>
+        <button class="nav-btn" onclick="showPage('profile', this)">👤</button>
+    </div>
+
+    <script>
+        let uploadedImage = "";
+
+        function showPage(pageId, btn) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-tab'));
+            
+            document.getElementById(pageId).classList.add('active');
+            if(btn) btn.classList.add('active-tab');
+        }
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedImage = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function saveProfile() {
+            let name = document.getElementById('in-name').value.trim();
+            let id = document.getElementById('in-id').value.trim();
+            
+            if(name && id) {
+                document.getElementById('out-name').innerText = name;
+                document.getElementById('out-id').innerText = id.startsWith('@') ? id : '@' + id;
+                
+                if(uploadedImage) {
+                    document.getElementById('out-pic-default').style.display = 'none';
+                    let imgEl = document.getElementById('out-pic-img');
+                    imgEl.src = uploadedImage;
+                    imgEl.style.display = 'block';
+                }
+                
+                alert("प्रोफाइल सफलतापूर्वक अपडेट हो गई!");
+                showPage('profile', document.querySelectorAll('.nav-btn')[3]);
+            } else {
+                alert("कृपया नाम और ID दोनों भरें।");
+            }
+        }
+
+        function searchUser() {
+            let query = document.getElementById('search-id').value.trim();
+            if(query) {
+                document.getElementById('result').style.display = 'block';
+                document.getElementById('found-name').innerText = "यूजर मिला: " + query;
+            } else {
+                alert("कृपया सर्च करने के लिए ID लिखें।");
+            }
+        }
+    </script>
+</body>
+</html>
